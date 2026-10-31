@@ -1,0 +1,27 @@
+name: Propose Homebrew formula updates
+
+on:
+  schedule:
+    # Every day at 09:23 IST (03:53 UTC)
+    - cron: '53 3 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'packages.json'
+      - '.github/workflows/promote.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: homebrew-package-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    uses: RuchirChawdhry/ci-workflows/.github/workflows/package-promotion.yml@feat/package-promotion
+    with:
+      ecosystem: homebrew
+      catalog: packages.json
+      dry-run: ${{ github.event_name == 'pull_request' }
