@@ -52,9 +52,10 @@ Enable **Settings > Actions > General > Workflow permissions >
 Allow GitHub Actions to create and approve pull requests**. This authorizes
 the bot to create proposals in this tap only; it never approves or merges.
 
-The automation skips when an earlier promotion PR awaits review. Because
-`GITHUB_TOKEN`-created PRs do not automatically trigger additional CI,
-the updater syntax-checks formulas before proposing them. Native installation
-checks belong to the application's release pipeline.
+The automation skips when an earlier promotion PR awaits review. GitHub can
+queue PR checks for `GITHUB_TOKEN`-created proposals, but they require a
+maintainer to choose **Approve workflows to run**. The updater syntax-checks
+formulas before proposing them; native installation checks should also pass
+in the application's release pipeline.
 
 Shared logic: [ci-workflows](https://github.com/RuchirChawdhry/ci-workflows).
