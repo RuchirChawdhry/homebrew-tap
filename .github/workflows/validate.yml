@@ -1,0 +1,30 @@
+name: Validate personal Homebrew tap
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate catalog and formula syntax
+        run: |
+          set -euo pipefail
+          python3 -m json.tool packages.json >/dev/null
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          doc = json.loads(Path("packages.json").read_text())
+          assert doc["schema"] == 1
+          assert isinstance(doc["packages"], list)
+          PY
+          shopt -s nullglob
+          for f in Formula/*.rb; do ruby -c "$f"; done
